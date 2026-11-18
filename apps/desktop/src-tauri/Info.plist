@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>NSBluetoothAlwaysUsageDescription</key>
+  <string>Kami 需要蓝牙来连接你的热敏打印机。</string>
+  <key>NSScreenCaptureUsageDescription</key>
+  <string>实时字幕功能需要收听系统声音。</string>
+  <key>NSMicrophoneUsageDescription</key>
+  <string>实时字幕的「麦克风」模式需要用麦克风收音，声音只在本机识别。</string>
+  <key>NSAudioCaptureUsageDescription</key>
+  <string>实时字幕功能需要收听系统声音，声音只在本机识别。</string>
+  <key>NSSpeechRecognitionUsageDescription</key>
+  <string>实时字幕使用 macOS 自带的端侧语音识别。</string>
+</dict>
+</plist>
