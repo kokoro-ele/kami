@@ -1,0 +1,17 @@
+[package]
+name = "kami-cli"
+description = "kami — command-line tool for cheap Bluetooth thermal printers"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[[bin]]
+name = "kami"
+path = "src/main.rs"
+
+[dependencies]
+kami-core = { path = "../kami-core" }
+clap = { version = "4", features = ["derive", "env"] }
+chrono = { version = "0.4", default-features = false, features = ["clock"] }
+tokio = { version = "1", features = ["rt-multi-thread", "macros", "time", "io-std", "io-util", "net", "sync"] }

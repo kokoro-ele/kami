@@ -1,0 +1,24 @@
+[package]
+name = "kami-core"
+description = "Drivers, rasterizer and BLE transport for cheap Bluetooth thermal printers"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[features]
+default = ["ble", "image", "text"]
+# 蓝牙传输（btleplug：macOS / Windows / Linux）
+ble = ["dep:btleplug", "dep:tokio", "dep:futures", "dep:uuid"]
+# PNG/JPEG 读写
+image = ["dep:image"]
+# 系统字体渲染文字
+text = ["dep:fontdue"]
+
+[dependencies]
+btleplug = { version = "0.11", optional = true }
+tokio = { version = "1", features = ["rt", "time", "sync"], optional = true }
+futures = { version = "0.3", optional = true }
+uuid = { version = "1", optional = true }
+image = { version = "0.25", default-features = false, features = ["png", "jpeg", "gif", "bmp", "webp"], optional = true }
+fontdue = { version = "0.9", optional = true }

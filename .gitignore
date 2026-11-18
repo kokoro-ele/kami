@@ -1,0 +1,13 @@
+/target
+**/node_modules
+apps/desktop/dist
+apps/desktop/src-tauri/gen
+apps/livecap/.build
+queue/
+*.png
+!apps/desktop/src-tauri/icons/*.png
+!apps/desktop/app-icon.png
+
+# 打包时生成
+apps/desktop/src-tauri/binaries/
+*.tar.gz

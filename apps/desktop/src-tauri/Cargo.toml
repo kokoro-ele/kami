@@ -1,0 +1,25 @@
+[package]
+name = "kami-desktop"
+description = "Kami 紙 — desktop app for Bluetooth thermal printers"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[lib]
+name = "kami_desktop_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = ["macos-private-api"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+kami-core = { path = "../../../crates/kami-core" }
+tokio = { version = "1", features = ["sync", "time"] }
+base64 = "0.22"
+fontdb = "0.22"
+ttf-parser = "0.25"
+reqwest = { version = "0.12", default-features = false, features = ["json", "rustls-tls"] }
+chrono = { version = "0.4", default-features = false, features = ["clock"] }

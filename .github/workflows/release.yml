@@ -1,0 +1,73 @@
+name: release
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  cli:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { os: macos-latest, target: aarch64-apple-darwin }
+          - { os: macos-latest, target: x86_64-apple-darwin }
+          - { os: windows-latest, target: x86_64-pc-windows-msvc }
+          - { os: ubuntu-latest, target: x86_64-unknown-linux-gnu }
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with: { targets: "${{ matrix.target }}" }
+      - if: runner.os == 'Linux'
+        run: sudo apt-get update && sudo apt-get install -y libdbus-1-dev pkg-config
+      - run: cargo build --release -p kami-cli --target ${{ matrix.target }}
+      - name: package
+        shell: bash
+        run: |
+          cd target/${{ matrix.target }}/release
+          if [ "${{ runner.os }}" = "Windows" ]; then
+            7z a ../../../kami-${{ matrix.target }}.zip kami.exe
+          else
+            tar czf ../../../kami-${{ matrix.target }}.tar.gz kami
+          fi
+      - uses: softprops/action-gh-release@v2
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: kami-${{ matrix.target }}.*
+
+  desktop:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { os: macos-26, args: "--target universal-apple-darwin" }
+          - { os: windows-latest, args: "" }
+          - { os: ubuntu-22.04, args: "" }
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.os == 'macos-26' && 'aarch64-apple-darwin,x86_64-apple-darwin' || '' }}
+      - if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf libdbus-1-dev pkg-config
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - run: npm ci || npm install
+        working-directory: apps/desktop
+      - uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          projectPath: apps/desktop
+          tagName: ${{ github.ref_name }}
+          releaseName: "Kami ${{ github.ref_name }}"
+          releaseDraft: true
+          args: ${{ matrix.args }}
